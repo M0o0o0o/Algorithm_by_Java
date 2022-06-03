@@ -41,8 +41,8 @@ public class Main {
     public static final long INF = Long.MAX_VALUE - 10000000;
     public static int n, m, start, end, p;
     public static ArrayList<ArrayList<Node>> graph = new ArrayList<ArrayList<Node>>();
-    public static long[][] d = new long[101][100001];
-    public static int[] pList = new int[101];
+    public static long[][] d = new long[102][100001];
+    public static int[] pList = new int[102];
 
     public static void dijkstra(int start, long[] d) {
         PriorityQueue<Node> q = new PriorityQueue<>();
@@ -80,6 +80,7 @@ public class Main {
         for (int i = 0; i < n + 1; i++) {
             graph.add(new ArrayList<Node>());
         }
+
         for (int i = 0; i < m; i++) {
             st = new StringTokenizer(br.readLine());
             int a = Integer.parseInt(st.nextToken());
@@ -103,11 +104,6 @@ public class Main {
         for (int i = 1; i < p+1; i++) {
             pList[i] = Integer.parseInt(st.nextToken());
             dijkstra(pList[i], d[i]);
-//            System.out.println(pList[i] + " 번째 차례");
-//            for (int j = 1; j < n + 1; j++) {
-//                System.out.print(d[pList[i]][j] + ", ");
-//            }
-//            System.out.println();
         }
         for (int i = 1; i < p+1; i++) {
             for (int j = 1; j < p+1; j++) {
@@ -117,8 +113,8 @@ public class Main {
                     b = pList[j];
                     c = pList[k];
                     if(d[0][a] == INF ) continue;
-                    if(a == b || d[i][b] == INF) continue;
-                    if(a==c || b==c || d[j][c] == INF) continue;
+                    if(i == j || d[i][b] == INF) continue;
+                    if(i==k || j==k || d[j][c] == INF) continue;
                     ans = Math.min(ans, d[0][a] + d[i][b] + d[j][c] + d[k][end]);
 
                 }
