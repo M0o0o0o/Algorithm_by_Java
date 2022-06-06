@@ -3,6 +3,7 @@ package implementation.problem14890;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.StringTokenizer;
 
@@ -23,16 +24,16 @@ public class Main {
     }
 
     public static boolean solve(int[] row) {
-        for (int i = 0; i < n; i++) {
-            System.out.print(row[i] + " ");
-        }
-        System.out.println();
-
+        boolean check = false;
         int level = row[0];
         int cnt = 1;
         int idx = 1;
-        System.out.println(idx);
         while (idx < n) {
+            if (check) {
+                check = false;
+                idx++;
+                continue;
+            }
             // 차이가 2이상인 경우
             if(Math.abs(row[idx] - level) > 1) return false;
             // 같은 높이인 경우
@@ -54,7 +55,6 @@ public class Main {
                 int c = 0;
                 int j = idx;
                 while (j < n) {
-                    System.out.println("in : " + j);
                     if (row[j] == row[idx]) {
                         c++;
                         j++;
@@ -66,6 +66,8 @@ public class Main {
                 if(j == n) return true;
                 idx = j - 1;
                 cnt = c - l;
+                level = row[idx];
+                check = true;
             }
         }
         return true;
@@ -95,10 +97,14 @@ public class Main {
         int[][] rotate_graph = rotate90();
 
         for (int i = 0; i < n; i++) {
-            if (solve(graph[i])) ans += 1;
-            if (solve(rotate_graph[i])) ans += 1;
-        }
+            if (solve(graph[i])) {
+                ans++;
+            }
+            if (solve(rotate_graph[i])) {
+                ans++;
+            }
 
+        }
         System.out.println(ans);
 
     }
