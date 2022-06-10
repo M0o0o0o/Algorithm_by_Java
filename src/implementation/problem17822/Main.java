@@ -40,34 +40,10 @@ public class Main {
             for (int j = 1; j < n + 1; j++) {
                 if (j % x == 0) {
                     rotate(d, k, j);
-                    System.out.println(j);
                 }
             }
-
-            System.out.println("==== after rotate ====== ");
-
-            for (int X = 1; X < n+1; X++) {
-                for (int y = 0; y < m; y++) {
-                    System.out.print(board.get(X).get(y) + " ");
-                }
-                System.out.println();
-            }
-
-            System.out.println();
             boolean isRemove = remove();
             if (!isRemove) plusOrMinus();
-
-            System.out.println("==== after calc ====");
-            for (int X = 1; X < n+1; X++) {
-                for (int y = 0; y < m; y++) {
-                    System.out.print(board.get(X).get(y) + " ");
-                }
-                System.out.println();
-            }
-
-            System.out.println();
-            System.out.println();
-
         }
 
         int ans = 0;
@@ -79,8 +55,8 @@ public class Main {
 
         System.out.println(ans);
         br.close();
-    }
 
+    }
 
 
         private static void plusOrMinus () {
@@ -94,9 +70,7 @@ public class Main {
                 }
             }
 
-            System.out.println(sum + " " + cnt);
             float avg =  ((float)sum / cnt);
-            System.out.println(avg);
             for (int i = 1; i < n + 1; i++) {
                 for (int j = 0; j < m; j++) {
                     if(board.get(i).get(j) == 0 ) continue;
@@ -111,15 +85,11 @@ public class Main {
 
         private static boolean remove () {
             boolean flag = false;
+            int[][] buf = new int[n + 1][m];
             for (int row = 1; row < n + 1; row++) {
                 for (int col = 0; col < m; col++) {
-//                    System.out.println();
-//                    System.out.println("start::  row : " + row + " col : " + col + " num : " + board.get(row).get(col));
 
                     for (int i = 0; i < DX.length; i++) {
-                        //    public static int[] DX = new int[]{0, 0, -1, 1};
-                        //    public static int[] DY = new int[]{-1, 1, 0, 0};
-                        // row == 1 and dx - 1 continue
                         if ((row == 1 && i == 2) || (row == n && i == 3)) continue;
                         int num = board.get(row).get(col);
                         if (num == 0) continue;
@@ -129,20 +99,23 @@ public class Main {
                         if (ny == -1) ny = m - 1;
                         if (ny == m) ny = 0;
                         if (num == board.get(nx).get(ny)) {
-//                            System.out.println("    delete::  nx : " + nx + " ny : " + ny + " num : " + board.get(nx).get(ny));
-                            board.get(row).set(col, 0);
-                            board.get(nx).set(ny, 0);
+                            buf[row][col] = -1;
+                            buf[nx][ny] = -1;
                             flag = true;
                         }
                     }
+
                 }
 
+            }
+            for (int i = 1; i < n + 1; i++) {
+                for (int j = 0; j < m; j++) {
+                    if(buf[i][j] == -1) board.get(i).set(j, 0);
+                }
             }
             return flag;
         }
 
-
-        // 번호가 xi의 배수인 원판을 di방향으로 ki칸 회전시킨다. di가 0인 경우는 시계 방향, 1인 경우는 반시계 방향이다.
         private static void rotate( int d, int k, int j){
 
             int[] buf = new int[m];
