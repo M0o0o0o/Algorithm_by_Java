@@ -23,10 +23,8 @@ public class Main {
                 }
             }
         }
-
         solve(0, 0, board);
         System.out.println(ans);
-
     }
 
     private static void solve(int x, int y, int[][][] board) {
