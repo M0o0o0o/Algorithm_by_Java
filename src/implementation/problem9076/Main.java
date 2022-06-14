@@ -5,6 +5,8 @@ import java.util.Scanner;
 
 public class Main {
 
+
+
     public static int t;
     public static int[] scores;
     public static void main(String[] args) {
