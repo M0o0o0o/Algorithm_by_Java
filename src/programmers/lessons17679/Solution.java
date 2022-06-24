@@ -53,7 +53,6 @@ class Solution {
             }
         }
     }
-
     private void remove() {
         for (int i = 0; i < targets.size(); i++) {
             int x = targets.get(i)[0];
@@ -78,5 +77,4 @@ class Solution {
         }
         return true;
     }
-
 }
