@@ -4,101 +4,67 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
 import java.util.StringTokenizer;
 
 //https://www.acmicpc.net/problem/4803
 public class Main {
     private static int n, m;
-    private static int[] parents = new int[501];
-    private static ArrayList<int[]> edges = new ArrayList<>();
-    private static HashSet<Integer> graph = new HashSet<>();
-    private static HashSet<Integer> ans = new HashSet<>();
+    private static ArrayList<Integer>[] tree;
+    private static boolean[] visited;
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = null;
-        int cnt = 0;
+        int cnt = 1;
         while (true) {
-            cnt++;
             st = new StringTokenizer(br.readLine());
             n = Integer.parseInt(st.nextToken());
             m = Integer.parseInt(st.nextToken());
-            if (n == 0 && m == 0) {
-                br.close();
-                return;
-            }
-            for (int i = 0; i < n + 1; i++) parents[i] = i;
+            if(n == 0 && m == 0) return;
 
-            edges.clear();
-            graph.clear();
-            ans.clear();
+            int ans = 0;
+            tree = new ArrayList[n];
+            visited = new boolean[n];
+            for (int i = 0; i < n; i++) {
+                tree[i] = new ArrayList<>();
+            }
 
             for (int i = 0; i < m; i++) {
                 st = new StringTokenizer(br.readLine());
-                int from = Integer.parseInt(st.nextToken());
-                int to = Integer.parseInt(st.nextToken());
-                edges.add(new int[]{from, to});
+                int from = Integer.parseInt(st.nextToken()) - 1;
+                int to = Integer.parseInt(st.nextToken()) - 1;
+                tree[from].add(to);
+                tree[to].add(from);
             }
 
-            sort();
-
-            for (int[] edge : edges) {
-                int a = edge[0];
-                int b = edge[1];
-                if (find(a) == find(b) || graph.contains(a) || graph.contains(b)) {
-                    graph.add(find(a));
-                    graph.add(find(b));
-                    continue;
+            for (int i = 0; i < n; i++) {
+                if (!visited[i]) {
+                    visited[i] = true;
+                    if(dfs(-1, i)) ans++;
                 }
-                union(a, b);
-            }
-            for (int i = 1; i < n + 1; i++) {
-                if(!graph.contains(parents[i])) ans.add(parents[i]);
             }
 
-            if (ans.size() == 0) {
+            if (ans == 0) {
                 System.out.println("Case " + cnt + ": No trees.");
-            } else if (ans.size() == 1) {
+            } else if (ans == 1) {
                 System.out.println("Case " + cnt + ": There is one tree.");
             } else {
-                System.out.println("Case " + cnt + ": A forest of " + ans.size() + " trees.");
+                System.out.println("Case " + cnt + ": A forest of " + ans + " trees.");
             }
+            cnt++;
         }
+
+
     }
 
-    private static int find(int x) {
-        if (parents[x] != x) {
-            parents[x] = find(parents[x]);
+    static private boolean dfs(int root, int now) {
+        for (int next : tree[now]) {
+            if(next == root) continue; // 자기 참조를 위한 확인 ex) 1->1
+            if(visited[next]) return false;
+            visited[next] = true;
+            if(!dfs(now, next)) return false;
         }
-        return parents[x];
-    }
+        return true;
 
-    private static void union(int a, int b) {
-        a = find(a);
-        b = find(b);
-        if (a < b) {
-            parents[b] = a;
-        } else {
-            parents[a] = b;
-        }
-    }
-
-    private static void sort() {
-        edges.sort(new Comparator<int[]>() {
-            @Override
-            public int compare(int[] o1, int[] o2) {
-                if (o1[0] > o2[0]) {
-                    return 1;
-                } else if (o1[0] < o2[0]) {
-                    return -1;
-                } else {
-                    if(o1[1] > o2[1]) return 1;
-                    else if (o1[1] < o2[1]) return -1;
-                    else return 0;
-                }
-            }
-        });
     }
 }
-
