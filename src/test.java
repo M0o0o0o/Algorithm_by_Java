@@ -16,6 +16,7 @@ public class test {
             cnt++;
             if (cnt % 6 == 0) {
                 System.out.println();
+                Collections.shuffle(lists);
             }
         }
     }

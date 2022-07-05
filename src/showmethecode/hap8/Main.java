@@ -3,15 +3,37 @@ package showmethecode.hap8;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.StringTokenizer;
+
+class Pair {
+    int left;
+    int right;
+
+    public Pair(int left, int right) {
+        this.left = left;
+        this.right = right;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        Pair pair = (Pair) o;
+        return left == pair.left && right == pair.right;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(left, right);
+    }
+}
 
 public class Main {
     static int[] alist, blist;
     static long[] asum, bsum;
     static int n;
-    static HashSet<String> check = new HashSet<>();
+    static HashSet<Pair> check = new HashSet<>();
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = null;
@@ -44,6 +66,7 @@ public class Main {
         int ans = 0;
         ans += count(0, middle);
         ans += count(middle, n - 1);
+        ans += count(middle, middle);
         int l = middle;
         int r = middle;
         while (true) {
@@ -54,6 +77,7 @@ public class Main {
                 isLeft = true;
                 if(r > middle) ans += count(l, r);
                 ans += count(0, l);
+                ans += count(l, l);
                 ans += count(l, middle);
                 ans += count(l, n - 1);
             }
@@ -62,29 +86,35 @@ public class Main {
                 isRight = true;
                 ans += count(0, r);
                 ans += count(l, r);
+                ans += count(r, r);
                 ans += count(middle, r);
                 ans += count(r, n - 1);
             }
 
             if(!isLeft && !isRight) break;
         }
-        for (int i = 0; i < middle; i++) {
-
-        }
         System.out.println(ans);
     }
 
     static int count(int start, int end) {
-        String now =
+        Pair pair = new Pair(start, end);
+        if (check.contains(pair)) {
+            return 0;
+        }
+        check.add(pair);
+
         long aCompare = asum[end];
         long bCompare = bsum[end];
         if (start != 0) {
             aCompare -= asum[start - 1];
-            bCompare -= asum[start - 1];
+            bCompare -= bsum[start - 1];
 
         }
-        System.out.println(start + " " + end + " " + aCompare + " " + bCompare);
-        if(aCompare == bCompare) return 1;
+
+        if (aCompare == bCompare) {
+            System.out.println((start + 1) + ", " + (end + 1));
+            return 1;
+        }
         return 0;
     }
 }
